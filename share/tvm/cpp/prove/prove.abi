@@ -1,0 +1,36 @@
+{
+  "ABI version": 2,
+  "version": "2.1.0",
+  "header": [
+    "pubkey",
+    "time",
+    "expire"
+  ],
+  "functions": [
+  {
+    "name": "constructor",
+    "inputs": [
+    ],
+    "outputs": [
+    ],
+    "id": "0x1"
+  },
+  {
+    "name": "generateWitness",
+    "inputs": [
+    { "name":"a", "type":"uint32" },
+    { "name":"x", "type":"uint32" }
+    ],
+    "outputs": [
+    { "name":"primary_input", "type":"bytes" },
+    { "name":"auxiliary_input", "type":"bytes" }
+    ],
+    "id": "0x2"
+  }
+  ],
+  "fields": [
+    { "name":"__uninitialized", "type":"bool" }
+  ],
+  "events": [
+  ]
+}

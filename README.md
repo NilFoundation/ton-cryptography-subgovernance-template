@@ -64,7 +64,7 @@ When running the executable `cli` from within the build directory two files will
 containing the corresponding data in the form of byteblobs.
 
 
-## Building  solidity contracts
+## Building  solidity code
 
 You need to use a **solc compiler** and **tvm linker** with support for these instructions:
 
@@ -92,13 +92,13 @@ instruction.
 
 ## `VERGRTH16` usage example
 
-This example is a simple contract which allows to verify Groth16 zk-SNARK proof using TVM.
+This example is a simple in-TVM piece of code which allows to verify Groth16 zk-SNARK proof using TVM.
 
 ### Methods
 
-This contract has two methods.
+This application has two methods.
 
-* `verification::constructor()` - method run on the contract's deploy.
+* `verification::constructor()` - method run on the in-TVM deployment.
 * `bool verification::verify(slice proof)` - proof packed into a slice with an inner format defined as follows.
 
 ### Input format
@@ -149,29 +149,29 @@ You will get something like this:
 
 - Profit!
 
-Now you have wallet and can deploy smart contracts. 
+Now you have wallet and can to TVM. 
 
 Let's go to deployment step!
 
 ## Deployment
 
 ### Moving proof:
-1. Transform binary proof file to hex format for usage with a tondev tool and copy it to a smart contract folder:
+1. Transform binary proof file to hex format for usage with a tondev tool and copy it to a in-TVM piece of logic folder:
 `cat proof | xxd -p | tr -d '\n' > ../examples/lscs/solidity/proof.hex`
-2. cd to smart contract folder
+2. cd to smart -TVM piece of logic folder
 `cd ../examples/lscs/solidity/`
 
-### Deploy smart contract
+### Deploy to TVM
 
-1. Compile smart contract
+1. Compile in-TVM piece of logic:
 `tondev sol compile verification.sol `
-2. Get address of a contract:
+2. Get address of a in-TVM piece of logic:
 `tondev contract info verification.abi.json`
-3. Send tokens to address of a contract *(for deploy you will need 10 tokens)*:
+3. Send tokens to address of an in-TVM piece of logic *(for deploy you will need 10 tokens)*:
 `tondev contract run SetcodeMultisigWallet.abi.json submitTransaction -n nil -i dest:<CONTRACT_ADDRESS>,value:10000000000,bounce:false,allBalance:false,payload:""`
-4. Deploy smart contract:
+4. Deploy in-TVM piece of logic:
 `tondev contract deploy verification.abi -n nil`
-5. Verify proof on chain:
+5. Verify proof within the cluster:
 `tondev contract run verification.abi.json verify -p -i proof:$(cat proof.hex) --network nil`
 
 

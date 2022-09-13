@@ -40,8 +40,6 @@ using auxiliary_input_marshalling_type =
                                              typename snark::r1cs_auxiliary_input<field_type>>;
 
 __always_inline blueprint<field_type> generate_witness(unsigned a_val, unsigned x_val) {
-    // This is an example circuit to prove x*x*x=a
-
     blueprint<field_type> bp;
     blueprint_variable<field_type> a;
     a.allocate(bp);

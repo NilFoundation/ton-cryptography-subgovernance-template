@@ -1,7 +1,7 @@
 # TON Proof Verification Protocol Template repository.
 
 One of the exciting recent developments around zk-SNARKs is that it is now possible to verify a zk-SNARK proof in a
-lscs (a.k.a. smart contract) on FreeTON. 
+lscs (a.k.a. smart contract) on FreeTON.
 
 Let's see how we can create a Solidity smart contract to generate proofs for that circuit on FreeTON.
 
@@ -30,7 +30,6 @@ make cli
 
 **To update** ```git submodule update --init --recursive```
 
-
 ## Verification instruction VERGRTH16 input creation
 
 To create `VERGRTH16` instruction input you need to represent the 'what you want to prove' in the form of a constraint
@@ -39,10 +38,10 @@ system using =nil;Crypto3 [Blueprint](https://github.com/NilFoundation/crypto3-b
 [ZK](https://github.com/NilFoundation/crypto3-zk) module. Then you can use byte-serialized output of the 'prove'
 function as input to the instruction in your lscs (a.k.a. smart contract).
 
-The =nil;Crypto3 Blueprint zk-SNARK library is a powerful library for defining circuits, generating & verifying proofs.
+The =nil; Crypto3 Blueprint zk-SNARK library is a powerful library for defining circuits, generating & verifying proofs.
 It can be hard to get a sense of how to use it in practice, so please
 follow [the tutorial](https://github.com/NilFoundation/crypto3-blueprint) providing a sense of the high-level components
-of =nil;Crypto3 Blueprint and how to use it concretely, as well as how to connect the proofs to FreeTON lscs.
+of =nil; Crypto3 Blueprint and how to use it concretely, as well as how to connect the proofs to FreeTON lscs.
 
 ## Serializing verification keys and proofs
 
@@ -63,7 +62,6 @@ that information to a file in the form of field elements that can be interpreted
 When running the executable `cli` from within the build directory two files will be created: `proof_data` and `vk_data`
 containing the corresponding data in the form of byteblobs.
 
-
 ## Building  solidity code
 
 You need to use a **solc compiler** and **tvm linker** with support for these instructions:
@@ -73,16 +71,15 @@ You need to use a **solc compiler** and **tvm linker** with support for these in
 - [linker fork](https://github.com/NilFoundation/tvm-linker)
 
 These forks **need to be built using instructions** from repo.
-*You will need `Boost` with `Boost.Filesystem` module to build them.* 
+*You will need `Boost` with `Boost.Filesystem` module to build them.*
 
-After compilation you will have 2 files: `solc` (solidity compiler) and `tvm_linker` (linker). 
+After compilation you will have 2 files: `solc` (solidity compiler) and `tvm_linker` (linker).
 
-To use these versions through `tondev`: 
+To use these versions through `tondev`:
 
-- you need to **put these files in the directory** `~/.tondev/solidity`/ 
+- you need to **put these files in the directory** `~/.tondev/solidity`/
 
--  give execution rights (`chmod +x`) to these files *(otherwise `tondev` will crash)*
-
+- give execution rights (`chmod +x`) to these files *(otherwise `tondev` will crash)*
 
 ## Using verification keys and proofs in Solidity
 
@@ -115,7 +112,6 @@ the [Groth16 zk-SNARK policy](https://github.com/NilFoundation/crypto3-zk/blob/m
 Byte vector assumes to be byte representation of all the underlying data types, recursively unwrapped to Fp field
 element and integral `std::size_t` values. All the values should be putted in the same order the recursion calculated.
 
-
 ## Deploy instructions:
 
 ### Creating a `SetcodeMultisigWallet` wallet:
@@ -123,62 +119,68 @@ element and integral `std::size_t` values. All the values should be putted in th
 [Full instruction is here](https://github.com/tonlabs/ton-labs-contracts/tree/master/solidity/safemultisig#install-through-tondev)
 
 1. Add ZKP-ready FLD network to `tondev`:
-`tondev network add fld gql.custler.net`
+   `tondev network add fld gql.custler.net`
 2. Create / Add your wallet via `tondev signer` and save your `<YOU_SIGNER_PUBLIC_ADDRESS>`
 3. Download wallet files:
+
 ```bash 
 wget https://raw.githubusercontent.com/tonlabs/ton-labs-contracts/master/solidity/setcodemultisig/SetcodeMultisigWallet.abi.json
 
 wget https://github.com/tonlabs/ton-labs-contracts/raw/master/solidity/setcodemultisig/SetcodeMultisigWallet.tvc
 ```
-4. Get wallet address:
-    `tondev contract info SetcodeMultisigWallet.abi.json -n fld `
 
-  It should be printed as:
-  > Address:   0:<address> (calculated from TVC and signer public)
+4. Get wallet address:
+   `tondev contract info SetcodeMultisigWallet.abi.json -n fld `
+
+It should be printed as:
+> Address:   0:<address> (calculated from TVC and signer public)
 
 5. Request test token from Jury (Ask to fund this address someone in related telegram group) to `<address>`
-  - ... Wait for it ...
-  -  now check your balance: `tondev contract info -a 0:<address> -n fld | grep Balance`
+
+- ... Wait for it ...
+- now check your balance: `tondev contract info -a 0:<address> -n fld | grep Balance`
+
 6. Deploy wallet:
-    `tondev contract deploy SetcodeMultisigWallet.abi.json constructor -n fld -i owners:"[0x<YOU_SIGNER_PUBLIC_ADDRESS>]",reqConfirms:1`
+   `tondev contract deploy SetcodeMultisigWallet.abi.json constructor -n fld -i owners:"[0x<YOU_SIGNER_PUBLIC_ADDRESS>]",reqConfirms:1`
 
 You will get something like this:
->Deploying...
->Contract has deployed at address: 0:<address>
+> Deploying...
+> Contract has deployed at address: 0:<address>
 
 - Profit!
 
-Now you have wallet and can to TVM. 
+Now you have wallet and can to TVM.
 
 Let's go to deployment step!
 
 ## Deployment
 
 ### Moving proof:
+
 1. Transform binary proof file to hex format for usage with a tondev tool and copy it to a in-TVM piece of logic folder:
-`cat proof | xxd -p | tr -d '\n' > ../examples/lscs/solidity/proof.hex`
+   `cat proof | xxd -p | tr -d '\n' > ../examples/lscs/solidity/proof.hex`
 2. cd to smart -TVM piece of logic folder
-`cd ../examples/lscs/solidity/`
+   `cd ../examples/lscs/solidity/`
 
 ### Deploy to TVM
 
 1. Compile in-TVM piece of logic:
-`tondev sol compile verification.sol `
+   `tondev sol compile verification.sol `
 2. Get address of a in-TVM piece of logic:
-`tondev contract info verification.abi.json`
+   `tondev contract info verification.abi.json`
 3. Send tokens to address of an in-TVM piece of logic *(for deploy you will need 10 tokens)*:
-`tondev contract run SetcodeMultisigWallet.abi.json submitTransaction -n nil -i dest:<CONTRACT_ADDRESS>,value:10000000000,bounce:false,allBalance:false,payload:""`
+   `tondev contract run SetcodeMultisigWallet.abi.json submitTransaction -n nil -i dest:<CONTRACT_ADDRESS>,value:10000000000,bounce:false,allBalance:false,payload:""`
 4. Deploy in-TVM piece of logic:
-`tondev contract deploy verification.abi -n nil`
+   `tondev contract deploy verification.abi -n nil`
 5. Verify proof within the cluster:
-`tondev contract run verification.abi.json verify -p -i proof:$(cat proof.hex) --network nil`
-
+   `tondev contract run verification.abi.json verify -p -i proof:$(cat proof.hex) --network nil`
 
 ## Tests
+
 Put your tests in a `test` folder.
+
 1. `cd build`
 2. Build tests:
-`cmake .. -DDBUILD_TESTS=1`
-`make circuit_test`
+   `cmake .. -DDBUILD_TESTS=1`
+   `make circuit_test`
 3. Run tests: `test/circuit_test`
